@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Nik</title>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        html{
+            font-size: 62.5;
+        }
+        #ques_container{
+            width: 100%;
+            min-height: 100vh;
+            background-color: rgb(228, 202, 218);
+            display: grid;
+            place-items: center;
+            /* padding: 3rem 8rem; */
+        }
+        #inner-div{
+            width: 40%;
+            background-color: azure;
+            padding: 3rem 8rem;
+            border-radius: 1rem;
+            box-shadow: 0 1rem 1rem rgba(0,0,0,0.4);
+        }
+        #title{
+            font-size: 35px;
+            font-weight: 400;
+            margin: 1rem 0 40px 0;
+        }
+        #next, #submit, #restart{
+            padding: 1rem 3rem;
+            outline: none;
+            text-transform: uppercase;
+            font-size: 1.3rem;
+            font-weight: 400;
+            display: block;
+            margin: auto;
+            cursor: pointer;
+            background-color: teal;
+            color: #fff;
+            border:rgb(228, 202, 218);
+            border-radius: 0.4rem;
+            margin-top: 4rem;     
+                 
+        }
+
+        #restart{
+            display:none;
+        }
+        #restart:hover{
+            background-color: rgb(6, 117, 30);
+            box-shadow: 0 0.5rem 0.5rem rgba(0,0,0,0.4);
+        }
+        #next, #submit:hover{
+            background-color: orangered;
+            box-shadow: 0 0.5rem 0.5rem rgba(0,0,0,0.4);
+        }
+        li{
+            list-style: none;
+            margin-top: 1rem;
+            font-size: small;
+
+      
+        }
+        label{
+            margin: 0 0.5rem;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: lighter;
+            
+        }
+        #result{
+            background-color: palegreen;
+            padding: 1rem 3rem;
+            margin-top: 2rem;
+            text-align: center;
+            /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
+            font-family: 'Handlee', cursive;
+            font-weight: bolder;
+            font-size: 1.8rem;
+            display:none;
+            border-radius: 5rem;
+            color: white;
+        }
+        #answersheet{
+            background-color: rgb(251, 159, 152);
+            padding: 2rem 4rem;
+            margin-top: 2rem;
+            text-align: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-weight: bolder;
+            display:none;
+        }
+        #fieldset{
+            border: none;
+
+        }
+       
+
+
+    </style>
+</head>
+<body>
+
+    <div id="ques_container">
+        <div id="inner-div">
+        <h2 id="title">Quiz</h2>
+        <fieldset id="fieldset">
+                <ul id="options">
+
+                </ul>
+        </fieldset >   
+        <div>
+            <p id="result"></p>
+        </div>
+        
+        <button id= "submit">submit</button>
+        <button id= "next">next</button>
+        <button id= "restart">restart</button>
+    </div>
+    <div id="answersheet">
+        
+    </div>
+
+    </div>
+    
+</body>
+
+    <script>
+
+        var quesDB = [
+            {
+                qQues: "Which method is correct in JavaScript?",
+                qOptions: [ "forEach", "slice", "splice", "all"],
+                qRight_ans: "all"
+                
+            },
+            {
+                qQues: "Which method returns new array?",
+                qOptions: ["forEach", "sort", "slice", "map"],
+                qRight_ans: "map"
+                
+            },
+            {
+                qQues: "DOM Manupulation is considered 'Expensive' in Javascript?",
+                qOptions: [ "yes", "no"],
+                qRight_ans: "yes"
+                
+            },
+            {
+                qQues: "array.splice method can be used for?",
+                qOptions: ["deleting elements", "adding elements", "both", "none"],
+                qRight_ans: "both"
+                
+            },
+            {
+                qQues: "What is Node.js?",
+                qOptions: ["Programming Language", "scripting language", "backend language", "platform"],
+                qRight_ans: "platform"
+                
+            },
+            {
+                qQues: "How can we add click event using DOM?",
+                qOptions: ["onclick", "onClick", "addEventListener(click)", "none"],
+                qRight_ans: "addEventListener(click)"
+                
+            },
+            
+            {
+                qQues: "which of below method itetrates complete array?",
+                qOptions: ["forEach", "sort", "slice", "map"],
+                qRight_ans: "forEach"
+                
+            },
+            {
+                qQues: "which of the following sorts the array?",
+                qOptions: ["forEach", "sort", "slice", "map"],
+                qRight_ans: "both"
+                
+            },
+            {
+                qQues: "Are you liking this quiz?",
+                qOptions: ["Sure", "Absolutely", "loving it", "not so good"],
+                qRight_ans: "loving it"
+                
+            },
+            {
+                qQues: "I hope you will appreciate my efforts on this mini-project",
+                qOptions: ["Yes, definitely", "no", "We don't do such things", "duh!"],
+                qRight_ans: "Yes, definitely"
+                
+            },
+        ];
+
+       var  current_ques=0;
+       var score=0;
+        var ques_container = document.getElementById("ques_container");
+        var title = document.getElementById("title");
+        var options = document.getElementById("options"); //ul
+        var next = document.getElementById("next");
+
+        var fieldset = document.getElementById("fieldset");
+        var restart = document.getElementById("restart");
+
+        
+            function createQuiz(){
+                var question = quesDB[current_ques];
+                // console.log(question.qQues);
+                fieldset.disabled = false;
+
+                title.innerHTML = question.qQues;
+                 next.style.display="none";
+                 result.style.display="none";
+                
+
+                question.qOptions.forEach(function(option, index){
+                            var radio = document.createElement("input");
+                        radio.setAttribute("type","radio");
+                        radio.setAttribute("name","option");
+                        radio.setAttribute("value",option);
+
+                        
+
+                        var label = document.createElement("label");
+                        label.innerHTML = option;
+
+                        var list_li = document.createElement("li");
+
+
+                        list_li.appendChild(radio);
+                        list_li.appendChild(label);
+
+                        options.appendChild(list_li);
+                        
+                });
+                
+            }
+
+            createQuiz();
+
+            submit.addEventListener("click", function(event){
+                var optionsCreated = document.getElementsByName("option");
+
+               // console.log(optionsCreated)
+                var checked_option = "";
+
+                fieldset.disabled = true;
+
+                optionsCreated.forEach(function(data, index){
+                    if(data.checked){
+                        checked_option = index
+                    }
+                });
+
+                if(checked_option ===""){
+                    // console.log(checked_option);
+                    alert("SELECT AN OPTION");
+                    fieldset.disabled = false;
+                }
+
+                var selected_option = optionsCreated[checked_option].value;
+
+                var is_right = quesDB[current_ques].qRight_ans === selected_option;
+                
+                if( is_right )
+                            {
+                                submit.style.display = "none";
+                                
+                                result.innerText = "Correct";
+
+                                result.classList.add("correct");
+                                result.style.backgroundColor="green";
+                                result.style.display="block";
+
+                                next.style.display = "block";
+                                
+                                 score++;
+                            }
+                            else
+                            {
+                                submit.style.display = "none";
+                                
+                                result.innerText = "InCorrect";
+                                result.style.display="block";
+                                
+                                result.classList.add("incorrect");
+                                result.style.backgroundColor="red";
+
+                                next.style.display = "block";
+                            }
+            })
+
+
+
+
+
+            next.addEventListener("click",function()
+                                    {
+                                    result.setAttribute("class","");
+                                    result.innerHTML = ""
+
+                                    options.innerHTML = "";
+
+                                    next.style.display = "none";
+                                    submit.style.display = "block";
+
+                                    //questions.shift();
+                                    current_ques++;
+
+                                    if( quesDB[current_ques] )
+                                    {
+                                        createQuiz();
+
+                                    }
+                                    else
+                                    {
+                                        // answersheet.style.display = "block";
+                                        // question_container.style.display = "none";
+
+                                        // showAnswerSheet();
+                                        answerKey();
+                                        // console.log("ques end");
+                                        // alert("ques end")
+
+                                    }
+
+                                    });
+
+
+
+                                    function answerKey(){
+                                         
+                                        title.innerHTML=""
+                                        title.innerText = `Your Scored: ${score}/ ${quesDB.length}`;
+                                        title.style.textAlign="center";
+                                        result.style.backgroundColor="rgba(220, 20, 60)";
+
+                                        options.innerHTML = "Answer Key:"
+                                        options.style.textAlign="center";
+                                        options.style.fontSize="3rem";
+                                        options.style.color="Red";
+                                        
+                                   // console.log(ques_container)
+                                    quesDB.forEach(function(data, index){
+                                        var lii = document.createElement("li");
+                                        lii.innerText = index+1+". "+quesDB[index].qQues+"\nAns: "+quesDB[index].qRight_ans;
+                                        result.appendChild(lii);
+                                        });
+
+                                        fieldset.disabled = true;
+                                        submit.style.display="none";
+                                        restart.style.display="block";
+                                        restart.addEventListener("click", function(){
+                                            location.reload();
+                                        })
+
+                             }
+
+
+
+
+    </script>
+</html>
